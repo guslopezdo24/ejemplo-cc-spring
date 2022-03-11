@@ -1,0 +1,26 @@
+#spring.jpa.hibernate.ddl-auto=update
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/example
+    username: root
+    password: password123
+    driver-class-name: com.mysql.jdbc.Driver
+#spring.jpa.show-sql: true
+
+resilience4j.circuitbreaker:
+  instances:
+    dbback:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 10
+      failureRateThreshold: 50
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      permittedNumberOfCallsInHalfOpenState: 3
+      recordExceptions: 
+        - java.util.concurrent.TimeoutException
+
+resilience4j.timelimiter:
+  instances:
+    dbback:
+      timeoutDuration: 2s
+      cancelRunningFuture: true
